@@ -26,7 +26,9 @@ int* searchFirstAlphaSubstr(char* str, int* len) {
 
 void delNfirstSymb(char* str, int n) {
 	for (int i = 0; i < n; ++i) {
-		for (int j = i + 1; str[j-1] = str[j]; ++j);
+		for (int j = 1; j <= static_cast<int>(strlen(str)); ++j) {
+			str[j - 1] = str[j];
+		}
 	}
 }
 
@@ -48,37 +50,54 @@ void insertNfirstSymb(char* str, char* symb, int n) {
 	}
 }
 
-//char* insertSymbAfterAlpha(char* str, char symb) {
-//	int* symbAdr;
-//	int len = 0;
-//	bool flag = false;
-//	for (int i = 0; i < static_cast<int>(strlen(str)); ++i) {
-//		symbAdr = searchFirstAlphaSubstr(str, &len);
-//		if (flag) {
-//
-//		}
-//		else {
-//			flag = false;
-//		}
-//	}
-//}
+char* insertSymbAfterAlpha(char* str, char* symb) {
+	int* symbAdr;
+	char strPiece[1000];
+	int len = 0, k = 0;
+	bool flag = false;
+	for (int i = 0; i < static_cast<int>(strlen(str)); ++i) {
+		symbAdr = searchFirstAlphaSubstr(str, &len);
+		if (flag) {
+			insertNfirstSymb(str, symb, 1);
+			flag = false;
+		}
+		else {
+			for (int i = 0; i < static_cast<int>(strlen(str)); ++i) {
+				if (static_cast<int*>((void*)str[i]) == symbAdr) {
+					for (int j = 0; j < len; j++) {
+						strPiece[j] = str[i + k];
+
+						++k;
+					}
+					break;
+				}
+			}
+			delNfirstSymb(strPiece, len);
+
+			flag = true;
+		}
+	}
+}
 
 int main(int argc, char* argv[]) {
 	char str[1000];
 	char symb[1000];
-	int n = 2, len = 0;
+	int n, len = 0;
 
 	cout << "Введите строку: ";
 	cin.getline(str, 1000, '\n');
 
 	cout << "Введите символ: ";
 	cin.getline(symb, 1000, '\n');
+
+	cin >> n;
+
+	insertNfirstSymb(str, symb, n);
+
+	cout << str;
 	
 	int* symbAdr = searchFirstAlphaSubstr(str, &len);
 
-	// delNfirstSymb(str, n);
-
-	insertNfirstSymb(str, symb, n);
-	cout << str;
+	system("PAUSE");
 	return 0;
 }
