@@ -3,8 +3,23 @@
 
 using namespace std;
 
+const char symbols[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const int symbolsSize = 52;
+
 bool isAlphaSymb(char str) {
-	return isalpha(str);
+	int size = static_cast<int>(strlen(str));
+	bool flag = false;
+	for (int i = 0; i < size; ++i){
+		for(int j = 0; j < symbolsSize; j++) {
+			if (str[i] == symbols[j])
+				flag = true;
+		}
+		if (!flag)
+			return 0;
+		else
+			flag = false;
+	}
+	return true;
 }
 
 int* searchFirstAlphaSubstr(char* str, int* len) {
@@ -84,10 +99,10 @@ int main(int argc, char* argv[]) {
 	char symb[1000];
 	int n, len = 0;
 
-	cout << "Ââåäèòå ñòðîêó: ";
+	cout << "Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã±Ã²Ã°Ã®ÃªÃ³: ";
 	cin.getline(str, 1000, '\n');
 
-	cout << "Ââåäèòå ñèìâîë: ";
+	cout << "Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã±Ã¨Ã¬Ã¢Ã®Ã«: ";
 	cin.getline(symb, 1000, '\n');
 
 	cin >> n;
