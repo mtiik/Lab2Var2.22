@@ -19,90 +19,68 @@ int isAlphaSymb(char str) {
 }
 
 char* searchFirstAlphaSubstr(char* str, int& len) {
-	int cnt = 0;
-	char* pntr;
-	for (int i = 0; i < static_cast<int>(strlen(str)); ++i) {
-		if (cnt >= strCounter) {
-			if (isAlphaSymb(*(str + i))) {
-				for (int j = i; j < static_cast<int>(strlen(str)); ++j) {
-					if (!isAlphaSymb(*(str + j))) {
-						break;
-					}
-					++len;
-				}
-				strCounter++;
-				pntr = *(&str + i);
-				return pntr;
-			}
-		}
-		++cnt;
-	}
-	return 0;
+	len = 0;
+	for (; *str && !isAlphaSymb(*str); str++);
+	if (*str == ' ' || *str == '\0') return 0;
+	char* buffer = str;
+	for (len++; *str && *str != ' '; str++, len++);
+	return buffer;
 }
 
 void delNfirstSymb(char* str, int n) {
-	for (int i = n-1; i >= 0; --i) {
-		*(str + i + 1) = *(str+i);
-	}
+	for (char* i = str + n; *str = *i; str++, i++);
 }
 
 void insertNfirstSymb(char* str, char symb, int n) {
-	int bufer = 0;
-	char* pointer;
-	pointer = searchFirstAlphaSubstr(str, len);
-	bufer = static_cast<int>(strlen(pointer));
+	str = searchFirstAlphaSubstr(str, len);
 	for (int j = 0; j < n; ++j) {
-		for (int i = static_cast <int> (strlen(pointer)); i > 0; --i) {
-			if (i != 1) {
-				*(pointer + i) = *(pointer + i - 1);
-			}
+		for (int i = len; i > 0; --i) {
+			if (i != 1) *(str + i) = *(str + i - 1);
 			else {
-				*(pointer + i) = *(pointer + i - 1);
-				*(pointer + i - 1) = *&(symb);
-				*(pointer + bufer + 1) = '\0';
+				*(str + i) = *(str + i - 1);
+				*(str + i - 1) = *&(symb);
 			}
-			
 		}
 	}
 }
 
 char* vstavkaSymbPosleBukv(char* str, char symb) {
-	int counter = 0;
-	char* pntr;
-	if (!isAlphaSymb(*(str)))
-		return 0;
-	while (true) {
-		if (counter % 2 == 0) {
-			insertNfirstSymb(str, symb, 1);
+	int len = 0;
+	char* buffer = str;
+	bool flag = false;
+	while (searchFirstAlphaSubstr(str, len)) {
+		if (flag) {
+			delNfirstSymb(str, len);
+			flag = false;
 		}
 		else {
-			pntr = searchFirstAlphaSubstr(str, len);
-			delNfirstSymb(pntr, len);
+			insertNfirstSymb(str, symb, 1);
+			str = str + ++len;
+			flag = true;
 		}
-		counter++;
 	}
-	return (&*(str));
+	return buffer;
 }
 
 int main(int argc, char* argv[]) {
 	char str[1000];
 	char symb[1000];
-	char* uk;
-	int i = 0;
 
-	cout << "Ââåäèòå ñòðîêó: ";
+	cout << "enter str: ";
 	cin.getline(str, 1000, '\n');
 
-	cout << "Ââåäèòå ñèìâîë: ";
-	cin.getline(symb, 1000, '\n');
+	while (*str != '0' || *(str + 1) != '/0') {
 
-	uk = vstavkaSymbPosleBukv(str, *symb);
+		cout << "enter symb: ";
+		cin.getline(symb, 1000, '\n');
 
-	while (*(uk + i)) {
-		cout << *(uk + i) << " ";
-		++i;
+		char* str2 = vstavkaSymbPosleBukv(str, *symb);
+		if (str2) cout << "new str: " << str2 << '\n';
+		else cout << "not change";
+
+		cout << '\n' << "enter 0 or str: ";
+		cin.getline(str, 1000, '\n');
 	}
-	cout << '\n';
 
 	system("PAUSE");
 	return 0;
